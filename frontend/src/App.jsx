@@ -7,6 +7,7 @@ import ProtectedRoute from "./routes/ProtectedRoute"
 import NotFound from "./pages/NotFound"
 import "./App.css"
 import PublicRoute from "./routes/PublicRoute"
+import VerifyPage from "./pages/VerifyPage"
 
 
 const App = () => {
@@ -18,6 +19,11 @@ const App = () => {
         <Route path="/" element={
           <ProtectedRoute>
             <Home/>
+          </ProtectedRoute>
+        }/>
+          <Route path="/verify/:token" element={
+          <ProtectedRoute>
+            <VerifyPage/>
           </ProtectedRoute>
         }/>
         <Route path="/login" element={

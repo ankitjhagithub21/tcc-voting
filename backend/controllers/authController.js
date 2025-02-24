@@ -2,6 +2,7 @@ const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
+const sendEmail = require("../utils/sendMail");
 
 // Secret key for JWT
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
@@ -63,7 +64,8 @@ exports.register = async (req, res) => {
         _id: savedUser._id,
         name: savedUser.name,
         email: savedUser.email,
-        isVoted:savedUser.isVoted
+        isVoted:savedUser.isVoted,
+        isVerified:savedUser.isVerified
       },
     });
 
@@ -103,9 +105,11 @@ exports.login = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
-        isVoted:user.isVoted
+        isVoted:user.isVoted,
+        isVerified:user.isVerified
       },
     });
+    
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error." });
@@ -137,4 +141,72 @@ exports.logout = (req, res) => {
 
   res.status(200).json({ message: "Logout successful." });
 };
+
+exports.sendVerificationLink = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).select("-password");
+    if (!user) {
+     
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    if(user.isVerified){
+      return res.status(400).json({ message: "User is already verified." });
+    }
+
+
+     const token = jwt.sign({ email:user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
+     user.verificationToken = token;
+
+     const html = `<p>Hello ${user.name},</p>
+       <p>Please verify your account by clicking the link below:</p>
+       <a href="${process.env.FRONTEND_URL}/verify/${token}">Verify Account</a>`;
+
+
+    await sendEmail(user.email,"Account Verification",html)
+     
+    res.status(200).json({message:"Check Your email."});
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error." });
+  }
+};
+
+
+
+exports.verifyUser = async (req, res) => {
+  const { token } = req.params;
+
+  if (!token) {
+    return res.status(400).json({ message: "Token is required." });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (!decoded) {
+      return res.status(400).json({ message: "Invalid or expired token." });
+    }
+
+    const user = await User.findOne({ email: decoded.email }).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    if (user.isVerified) {
+      return res.status(200).json({ message: "User is already verified." });
+    }
+
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    await user.save();
+
+    res.status(200).json({ message: "Account verified successfully!",user});
+  } catch (error) {
+    console.error("JWT Verification Error:", error.message);
+    res.status(400).json({ message: "Invalid or expired token." });
+  }
+};
+
 

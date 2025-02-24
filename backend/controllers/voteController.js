@@ -2,37 +2,43 @@ const Vote = require("../models/vote");
 const User = require("../models/user");
 
 exports.createVote = async (req, res) => {
-  
   const { team } = req.body;
+  const userId = req.user?.userId;
 
-  const userId = req.user.userId;
+  if (!team) {
+    return res.status(400).json({ message: "Team is required." });
+  }
 
   try {
-    const existingVote = await Vote.findOne({ userId });
+    // Find user and check if they are verified
+    const user = await User.findById(userId).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
 
+    if (!user.isVerified) {
+      return res.status(403).json({ message: "You are not verified." });
+    }
+
+    // Check if the user has already voted
+    const existingVote = await Vote.findOne({ userId });
     if (existingVote) {
       return res.status(400).json({ message: "You have already voted." });
     }
 
-    //store the vote
-    const vote = new Vote({
-      userId,
-      team,
-    });
-
-    await vote.save();
-
-    const user = await User.findById(userId).select("-password");
-
+    // Create and save the vote
+    const vote = new Vote({ userId, team });
     user.isVoted = true;
-    await user.save();
-    
-    res.status(201).json({ message: "Vote recorded successfully !" });
+
+    await Promise.all([user.save(), vote.save()]);
+
+    res.status(201).json({ message: "Vote recorded successfully!" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error." });
+    console.error("Error creating vote:", error);
+    res.status(500).json({ message: "Server error. Please try again later." });
   }
 };
+
 
 exports.getResults = async (req, res) => {
   try {
