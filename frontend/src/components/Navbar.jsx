@@ -43,37 +43,18 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="fixed w-full top-0 bg-white shadow-lg z-10">
-            <div className="container mx-auto p-4">
+        <nav className="fixed w-full top-0  z-10">
+            <div className="container mx-auto p-3">
                 <div className="flex items-center justify-between">
                     {/* Logo Section */}
                     <div>
-                        <img src="./tcclogo.png" alt="tcckasba" width={50} />
+                        <img src="./tcclogo.png" alt="tcckasba" width={60} />
                         
                     </div>
 
                     {/* Navigation Section */}
                     <ul className="flex items-center gap-5">
-                        <NavLink
-                            to="/"
-                            className={({ isActive }) =>
-                                isActive
-                                    ? "text-indigo-600 font-semibold"
-                                    : "text-gray-600 hover:text-indigo-500 transition"
-                            }
-                        >
-                            Home
-                        </NavLink>
-                        <NavLink
-                            to="/about"
-                            className={({ isActive }) =>
-                                isActive
-                                    ? "text-indigo-600 font-semibold"
-                                    : "text-gray-600 hover:text-indigo-500 transition"
-                            }
-                        >
-                            About
-                        </NavLink>
+                     
                         {user ? (
                             <button
                                 className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"

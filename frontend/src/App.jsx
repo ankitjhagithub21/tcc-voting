@@ -6,6 +6,7 @@ import useFetchUser from "./hooks/useFetchUser"
 import ProtectedRoute from "./routes/ProtectedRoute"
 import NotFound from "./pages/NotFound"
 import "./App.css"
+import PublicRoute from "./routes/PublicRoute"
 
 
 const App = () => {
@@ -19,8 +20,16 @@ const App = () => {
             <Home/>
           </ProtectedRoute>
         }/>
-        <Route path="/login" element={<Login/>}/>
-        <Route path="/register" element={<Register/>}/>
+        <Route path="/login" element={
+          <PublicRoute>
+            <Login/>
+          </PublicRoute>
+        }/>
+        <Route path="/register" element={
+          <PublicRoute>
+          <Register/>
+        </PublicRoute>
+        }/>
         <Route path="/*" element={<NotFound/>}/>
       </Routes>
     </Router>
