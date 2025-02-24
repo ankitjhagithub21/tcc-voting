@@ -50,8 +50,10 @@ const Home = () => {
                         <p>Team B: {votes?.TeamB}</p>
                     </div> : <div>
                         <h1>Vote for Your Team</h1>
-                        <button onClick={() => vote('TeamA')}>Vote Team A</button>
-                        <button onClick={() => vote('TeamB')}>Vote Team B</button>
+                        <div className='flex items-center gap-5 justify-center'>
+                        <button className='bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg' onClick={() => vote('TeamA')}>Vote Team A</button>
+                        <button className='bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg'  onClick={() => vote('TeamB')}>Vote Team B</button>
+                        </div>
                     </div>
                 }
             </main>
