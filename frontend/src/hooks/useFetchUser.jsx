@@ -15,7 +15,7 @@ const useFetchUser = () => {
             const data = await res.json();
 
            if(res.ok){
-            dispatch(setUser(data.uer))
+            dispatch(setUser(data))
            }else{
             dispatch(setUser(null))
            }
