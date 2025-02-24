@@ -4,6 +4,7 @@ import Login from "./pages/Login"
 import Register from "./pages/Register"
 import useFetchUser from "./hooks/useFetchUser"
 import ProtectedRoute from "./routes/ProtectedRoute"
+import NotFound from "./pages/NotFound"
 
 
 const App = () => {
@@ -19,6 +20,7 @@ const App = () => {
         }/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/register" element={<Register/>}/>
+        <Route path="/*" element={<NotFound/>}/>
       </Routes>
     </Router>
   )
