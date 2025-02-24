@@ -1,135 +1,116 @@
-import { useState } from "react"
-import { setUser } from "../app/appSlice"
-import { useDispatch } from "react-redux"
-import { Link, useNavigate } from "react-router-dom"
+import { useState } from "react";
+import { setUser } from "../app/appSlice";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2';
 
 const Login = () => {
-  const myStyle = { backgroundImage: "url(./bg.jpg)", backgroundPosition: "center", backgroundSize: "cover" }
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const navigate = useNavigate();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/auth/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: 'include',
+                body: JSON.stringify({ email, password })
+            });
 
-  const dispatch = useDispatch();
+            const data = await res.json();
+            if (res.ok) {
+                dispatch(setUser(data.user));
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Login Successful',
+                    text: 'Welcome back!',
+                    confirmButtonColor: '#4F46E5',
+                });
+                navigate("/");
+            } else {
+                setError(data.message);
+            }
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 to-blue-400 p-4">
+            <div className="flex flex-col bg-white rounded-xl shadow-lg overflow-hidden md:flex-row md:max-w-3xl w-full">
+                {/* Left Side */}
+                <div className="p-6 bg-gradient-to-r from-indigo-600 to-purple-500 text-white md:w-1/2 flex flex-col justify-between">
+                    <div className="text-center">
+                        <img src="./tcclogo.png" alt="TCC Logo" className="mx-auto" width={80} />
+                        <h2 className="text-3xl font-extrabold mt-4">TCC VOTING APP</h2>
+                    </div>
+                    <p className="text-center mt-10">
+                        Don't have an account?{" "}
+                        <Link to="/register" className="underline hover:text-cyan-300">
+                            Create here!
+                        </Link>
+                    </p>
+                </div>
 
-    setLoading(true)
-    try {
-      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        credentials: 'include',
-        body: JSON.stringify({ email, password })
-      })
+                {/* Right Side */}
+                <div className="p-8 md:w-2/3">
+                    <h3 className="text-3xl font-semibold text-gray-800 mb-6">Account Login</h3>
+                    {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
-      const data = await res.json();
-      if (res.ok) {
-        dispatch(setUser(data.user))
-        navigate("/")
-      } else {
-        setError(data.message)
-      }
-    } catch (error) {
-      console.log(error)
-      setError(error.message)
-    } finally {
-      setLoading(false)
-    }
-  }
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div>
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-600">
+                                Email Address
+                            </label>
+                            <input
+                                type="email"
+                                id="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Enter your email"
+                                className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                                required
+                            />
+                        </div>
 
-  return (
-    <div className="flex items-center min-h-screen p-4 w-full justify-center " style={myStyle}>
-      <div className="flex flex-col overflow-hidden bg-white rounded-md shadow-lg md:flex-row md:flex-1 lg:max-w-screen-md w-full">
-        <div className="p-4 py-6 text-white bg-blue-500 md:w-80 md:flex-shrink-0 md:flex md:flex-col md:items-center md:justify-evenly">
-        <div>
-            <img src="./tcclogo.png" alt="tcc_logo" className="mx-auto" width={70} />
-          </div>
-         <h2 className="text-3xl font-bold text-center mt-2">TCC VOTING APP</h2>
-          <p className="flex flex-col items-center justify-center mt-10 text-center">
-            <span>Don&apos;t have an account?</span>
-            <Link to="/register" className="underline">
-              Create here!
-            </Link>
-          </p>
-          
+                        <div>
+                            <label htmlFor="password" className="block text-sm font-medium text-gray-600">
+                                Password
+                            </label>
+                            <input
+                                type="password"
+                                id="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Enter your password"
+                                className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                                required
+                            />
+                            <Link to="#" className="text-sm text-indigo-600 hover:underline mt-2 inline-block">
+                                Forgot Password?
+                            </Link>
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full py-2 px-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-400 transition"
+                        >
+                            {loading ? 'Please wait...' : 'Login'}
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div className="p-5 bg-white md:flex-1">
-          <h3 className="my-4 text-2xl font-semibold text-gray-700">
-            Account login
-          </h3>
-          {
-            error && <p className="text-red-600 mb-2 text-sm">{error}</p>
-          }
-          <form onSubmit={handleSubmit} className="flex flex-col space-y-5">
+    );
+};
 
-
-            <div className="flex flex-col space-y-1">
-              <label
-                htmlFor="email"
-                className="text-sm font-semibold text-gray-500"
-              >
-                Email address
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                className="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
-                required
-              />
-            </div>
-            <div className="flex flex-col space-y-1">
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="text-sm font-semibold text-gray-500"
-                >
-                  Password
-                </label>
-                <a
-                  href="#"
-                  className="text-sm text-blue-600 hover:underline focus:text-blue-800"
-                >
-                  Forgot Password?
-                </a>
-              </div>
-              <input
-                type="password"
-                id="password"
-                className="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-
-            <div>
-              <button
-                disabled={loading}
-                type="submit"
-                className="w-full cursor-pointer px-4 py-2 text-lg font-semibold text-white transition-colors duration-300 bg-blue-500 rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-blue-200 focus:ring-4"
-              >
-                {
-                  loading ? 'Please wait...' : 'Login'
-                }
-              </button>
-            </div>
-
-          </form>
-        </div>
-      </div>
-    </div>
-
-  )
-}
-
-export default Login
+export default Login;

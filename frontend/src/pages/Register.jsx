@@ -1,153 +1,121 @@
-import { useState } from "react"
-import { setUser } from "../app/appSlice"
-import { useDispatch } from "react-redux"
-import { Link, useNavigate } from "react-router-dom"
+import { useState } from "react";
+import { setUser } from "../app/appSlice";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Register = () => {
-  const myStyle = { backgroundImage: "url(./bg.jpg)", backgroundPosition: "center", backgroundSize: "cover" }
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: ""
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
 
-    setLoading(true)
     try {
       const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/auth/register`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        credentials: 'include',
-        body: JSON.stringify({ name, email, password })
-      })
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(formData)
+      });
 
       const data = await res.json();
-      if (res.status === 201) {
-        dispatch(setUser(data.user))
-        navigate("/")
+      if (res.ok) {
+        dispatch(setUser(data.user));
+        Swal.fire({ icon: "success", title: data.message, confirmButtonText: "Ok" });
+        navigate("/");
       } else {
-        setError(data.message)
+        setError(data.message || "Failed to register. Please try again.");
       }
     } catch (error) {
-      console.log(error)
-      setError(error.message)
+      console.error(error);
+      setError("An error occurred. Please try again later.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="flex items-center min-h-screen p-4 w-full justify-center " style={myStyle}>
-      <div className="flex flex-col overflow-hidden bg-white rounded-md shadow-lg max md:flex-row md:flex-1 lg:max-w-screen-md w-full">
-        <div className="p-4 py-6 text-white bg-blue-500 md:w-80 md:flex-shrink-0 md:flex md:flex-col md:items-center md:justify-evenly">
-          <div>
-            <img src="./tcclogo.png" alt="tcc_logo" className="mx-auto" width={70} />
-          </div>
-         <h2 className="text-3xl font-bold text-center mt-2">TCC VOTING APP</h2>
-       
-          <p className="flex flex-col items-center justify-center mt-10 text-center">
-            <span>Already have an account?</span>
-            <Link to="/login" className="underline">
-              Login Here
-            </Link>
-          </p>
-         
+    <div className="flex items-center min-h-screen p-4 w-full justify-center bg-gray-100">
+      <div className="flex flex-col bg-white rounded-lg shadow-lg max-w-4xl w-full md:flex-row overflow-hidden">
+        <div className="p-6 bg-blue-500 text-white md:w-1/2 flex flex-col justify-center items-center">
+          <img src="./tcclogo.png" alt="TCC Logo" className="w-16 mb-4" />
+          <h2 className="text-3xl font-bold">TCC VOTING APP</h2>
+          <p className="mt-4">Already have an account?</p>
+          <Link to="/login" className="underline hover:text-blue-200">Login Here</Link>
         </div>
-        <div className="p-5 bg-white md:flex-1">
-          <h3 className="my-4 text-2xl font-semibold text-gray-700">
-            Create account
-          </h3>
 
-          {
-            error && <p className="text-red-500 mb-2 text-sm">{error}</p>
-          }
-          <form onSubmit={handleSubmit} className="flex flex-col space-y-5">
-            <div className="flex flex-col space-y-1">
-              <label
-                htmlFor="name"
-                className="text-sm font-semibold text-gray-500"
-              >
-                Name
-              </label>
+        <div className="p-6 md:w-1/2">
+          <h3 className="text-2xl font-semibold text-gray-700 mb-4">Create Account</h3>
+
+          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-600">Name</label>
               <input
                 type="text"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
                 placeholder="Enter your name"
-                className="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
-                required
-              />
-            </div>
-
-            <div className="flex flex-col space-y-1">
-              <label
-                htmlFor="email"
-                className="text-sm font-semibold text-gray-500"
-              >
-                Email address
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                className="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
-                required
-              />
-            </div>
-            <div className="flex flex-col space-y-1">
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="text-sm font-semibold text-gray-500"
-                >
-                  Password
-                </label>
-                <a
-                  href="#"
-                  className="text-sm text-blue-600 hover:underline focus:text-blue-800"
-                >
-                  Forgot Password?
-                </a>
-              </div>
-              <input
-                type="password"
-                id="password"
-                className="px-4 py-2 transition duration-300 border border-gray-300 rounded focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-blue-300"
                 required
               />
             </div>
 
             <div>
-              <button
-                disabled={loading}
-                type="submit"
-                className="w-full px-4 py-2 cursor-pointer text-lg font-semibold text-white transition-colors duration-300 bg-blue-500 rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-blue-200 focus:ring-4"
-              >
-                {
-                  loading ? 'Please wait...' : 'Register'
-                }
-              </button>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-600">Email Address</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Enter your email"
+                className="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-blue-300"
+                required
+              />
             </div>
 
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-600">Password</label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter your password"
+                className="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-blue-300"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+            >
+              {loading ? "Please wait..." : "Register"}
+            </button>
           </form>
         </div>
       </div>
     </div>
+  );
+};
 
-  )
-}
-
-export default Register
+export default Register;

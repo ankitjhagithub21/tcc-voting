@@ -5,6 +5,7 @@ import Register from "./pages/Register"
 import useFetchUser from "./hooks/useFetchUser"
 import ProtectedRoute from "./routes/ProtectedRoute"
 import NotFound from "./pages/NotFound"
+import "./App.css"
 
 
 const App = () => {

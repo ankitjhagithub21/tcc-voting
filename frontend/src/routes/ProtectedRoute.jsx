@@ -1,11 +1,12 @@
 import { useSelector } from "react-redux"
 import { Navigate } from "react-router-dom"
+import Loading from "../components/Loading"
 
 
 const ProtectedRoute = ({children}) => {
     const {isLoading,user} = useSelector(state=>state.app)
     if(isLoading){
-        return <p>Loading...</p>
+        return <Loading/>
     }
 
     if(!user){
