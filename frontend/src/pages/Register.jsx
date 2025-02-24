@@ -47,13 +47,11 @@ const Register = () => {
     <div className="flex items-center min-h-screen p-4 lg:justify-center " style={myStyle}>
       <div className="flex flex-col overflow-hidden bg-white rounded-md shadow-lg max md:flex-row md:flex-1 lg:max-w-screen-md">
         <div className="p-4 py-6 text-white bg-blue-500 md:w-80 md:flex-shrink-0 md:flex md:flex-col md:items-center md:justify-evenly">
-          <div className="my-3 text-4xl font-bold tracking-wider text-center">
-            <a href="#">K-WD</a>
+          <div>
+            <img src="./tcclogo.png" alt="tcc_logo" className="mx-auto" width={70} />
           </div>
-          <p className="mt-6 font-normal text-center text-gray-300 md:mt-0">
-            With the power of K-WD, you can now focus only on functionaries for your
-            digital products, while leaving the UI design on us!
-          </p>
+         <h2 className="text-3xl font-bold">TCC VOTING APP</h2>
+       
           <p className="flex flex-col items-center justify-center mt-10 text-center">
             <span>Already have an account?</span>
             <Link to="/login" className="underline">

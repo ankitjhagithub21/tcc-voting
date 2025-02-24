@@ -15,7 +15,7 @@ const sendCookie = (user, res) => {
   res.cookie("auth_token", token, {
     httpOnly: true,
     secure: true, 
-    sameSite: "Strict",
+    sameSite: "none",
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
 };
@@ -132,7 +132,7 @@ exports.logout = (req, res) => {
   res.clearCookie("auth_token", {
     httpOnly: true,
     secure: true,
-    sameSite: "Strict",
+    sameSite: "none",
   });
 
   res.status(200).json({ message: "Logout successful." });
