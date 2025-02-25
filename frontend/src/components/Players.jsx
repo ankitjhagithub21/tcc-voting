@@ -80,10 +80,21 @@ const Players = () => {
                 <h1 className="text-3xl font-bold text-center text-indigo-600 mb-5">
                     🏆 27वाँ टी.सी.सी कप कसबा 2025 🏆
                 </h1>
-                <p className="my-2">अपने टीम का चयन करें</p>
+                <p className="my-2 text-center">अपने टीम का चयन करें</p>
+                <div className="mb-4 mt-6">
+                    <input
+                        type="text"
+                        placeholder="🔍 खिलाड़ियों को खोजें (हिंदी/English)"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400"
+                    />
+                </div>
+
+              
 
                 {selectedPlayers.length > 0 && (
-                    <div className="mt-6">
+                    <div className="my-6">
                         <h2 className="text-xl font-semibold text-center text-green-600">✅ चयनित खिलाड़ी:</h2>
                         <ul className="mt-2 space-y-2">
                             {selectedPlayers.map((player, index) => (
@@ -91,7 +102,7 @@ const Players = () => {
                                     <span>{index + 1}. {player}</span>
                                     <button
                                         onClick={() => removePlayer(player)}
-                                        className="ml-4 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                                        className="ml-4 px-3 text-sm py-1 bg-red-500 text-white rounded hover:bg-red-600"
                                     >
                                         हटाएँ
                                     </button>
@@ -110,15 +121,7 @@ const Players = () => {
                     </div>
                 )}
 
-                <div className="mb-4 mt-6">
-                    <input
-                        type="text"
-                        placeholder="🔍 खिलाड़ियों को खोजें (हिंदी/English)"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400"
-                    />
-                </div>
+               
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {filteredPlayers.map(({ name }, index) => (
