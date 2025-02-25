@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setUser, setVotes } from '../app/appSlice';
 import Navbar from '../components/Navbar';
 import Swal from 'sweetalert2';
+import Players from '../components/Players';
 
 const Home = () => {
     const { user, votes } = useSelector((state) => state.app);
@@ -71,7 +72,7 @@ const Home = () => {
     return (
         <>
             <Navbar />
-            <main className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 p-6">
+            <main className="min-h-screen w-full py-24 flex flex-col gap-5 items-center justify-center bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 p-6">
                 <div className="max-w-4xl w-full">
                     {user?.isVoted ? (
                         <div className="bg-white p-8 rounded-2xl shadow-2xl text-center">
@@ -111,6 +112,7 @@ const Home = () => {
                         </div>
                     )}
                 </div>
+                <Players/>
             </main>
         </>
     );
