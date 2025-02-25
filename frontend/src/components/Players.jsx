@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
-// Player list with names and their corresponding Romanized versions for easy search.
 const playersList = [
     { name: "सुभंकर कुमार दास", roman: "subhankar kumar das" },
     { name: "प्रदीप कुमार दास", roman: "pradeep kumar das" },
@@ -49,7 +48,6 @@ const Players = () => {
     const [selectedPlayers, setSelectedPlayers] = useState([]);
     const [copied, setCopied] = useState(false);
 
-    // Toggle player selection
     const toggleSelect = (player) => {
         if (selectedPlayers.includes(player)) {
             setSelectedPlayers(selectedPlayers.filter((p) => p !== player));
@@ -58,7 +56,10 @@ const Players = () => {
         }
     };
 
-    // Copy selected players to clipboard
+    const removePlayer = (player) => {
+        setSelectedPlayers(selectedPlayers.filter((p) => p !== player));
+    };
+
     const copyToClipboard = () => {
         const playerListText = selectedPlayers.map((player, index) => `${index + 1}. ${player}`).join("\n");
         navigator.clipboard.writeText(playerListText).then(() => {
@@ -67,7 +68,6 @@ const Players = () => {
         });
     };
 
-    // Filter players by both Hindi and English search
     const filteredPlayers = playersList.filter(
         ({ name, roman }) =>
             name.toLowerCase().includes(search.toLowerCase()) ||
@@ -75,24 +75,51 @@ const Players = () => {
     );
 
     return (
-        <div className=" min-h-screen w-full rounded-lg">
+        <div className="min-h-screen w-full rounded-lg">
             <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6">
                 <h1 className="text-3xl font-bold text-center text-indigo-600 mb-5">
                     🏆 27वाँ टी.सी.सी कप कसबा 2025 🏆
                 </h1>
+                <p className="my-2">अपने टीम का चयन करें</p>
 
-                {/* Search input */}
-                <div className="mb-4">
+                {selectedPlayers.length > 0 && (
+                    <div className="mt-6">
+                        <h2 className="text-xl font-semibold text-center text-green-600">✅ चयनित खिलाड़ी:</h2>
+                        <ul className="mt-2 space-y-2">
+                            {selectedPlayers.map((player, index) => (
+                                <li key={index} className="flex justify-between items-center">
+                                    <span>{index + 1}. {player}</span>
+                                    <button
+                                        onClick={() => removePlayer(player)}
+                                        className="ml-4 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                                    >
+                                        हटाएँ
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+
+                        <button
+                            onClick={copyToClipboard}
+                            className="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                        >
+                            📋 खिलाड़ियों की सूची कॉपी करें
+                        </button>
+
+                        {copied && <p className="mt-2 text-green-500">✅ सूची क्लिपबोर्ड में कॉपी हो गई!</p>}
+                    </div>
+                )}
+
+                <div className="mb-4 mt-6">
                     <input
                         type="text"
                         placeholder="🔍 खिलाड़ियों को खोजें (हिंदी/English)"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400"
                     />
                 </div>
 
-                {/* Player list */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {filteredPlayers.map(({ name }, index) => (
                         <div
@@ -108,29 +135,6 @@ const Players = () => {
                         </div>
                     ))}
                 </div>
-
-                {/* Selected players and copy button */}
-                {selectedPlayers.length > 0 && (
-                    <div className="mt-6">
-                        <h2 className="text-xl font-semibold text-center text-green-600">✅ चयनित खिलाड़ी:</h2>
-                        <ul className="list-disc list-inside mt-2">
-                            {selectedPlayers.map((player, index) => (
-                                <li key={index}>{index + 1}. {player}</li>
-                            ))}
-                        </ul>
-
-                        <button
-                            onClick={copyToClipboard}
-                            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-                        >
-                            📋 खिलाड़ियों की सूची कॉपी करें
-                        </button>
-
-                        {copied && (
-                            <p className="mt-2 text-green-500">✅ सूची क्लिपबोर्ड में कॉपी हो गई!</p>
-                        )}
-                    </div>
-                )}
             </div>
         </div>
     );
