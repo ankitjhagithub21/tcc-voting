@@ -4,6 +4,7 @@ import { setUser, setVotes } from '../app/appSlice';
 import Navbar from '../components/Navbar';
 import Swal from 'sweetalert2';
 import Players from '../components/Players';
+import Footer from '../components/Footer';
 
 const Home = () => {
     const { user, votes } = useSelector((state) => state.app);
@@ -114,6 +115,7 @@ const Home = () => {
                 </div>
                 <Players/>
             </main>
+            <Footer/>
         </>
     );
 };
