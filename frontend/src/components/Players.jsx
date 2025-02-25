@@ -123,7 +123,7 @@ const Players = () => {
 
                
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[40vh] scroll p-2 overflow-y-scroll">
                     {filteredPlayers.map(({ name }, index) => (
                         <div
                             key={index}
