@@ -75,7 +75,7 @@ const Players = () => {
     );
 
     return (
-        <div className="min-h-screen w-full rounded-lg">
+        <div className="w-full rounded-lg">
             <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6">
                 <h1 className="text-3xl font-bold text-center text-indigo-600 mb-5">
                     🏆 27वाँ टी.सी.सी कप कसबा 2025 🏆
@@ -96,7 +96,7 @@ const Players = () => {
                 {selectedPlayers.length > 0 && (
                     <div className="my-6">
                         <h2 className="text-xl font-semibold text-center text-green-600">✅ चयनित खिलाड़ी:</h2>
-                        <ul className="mt-2 space-y-2">
+                        <ul className="mt-2 space-y-2 max-h-[20vh] scroll p-2 overflow-y-scroll">
                             {selectedPlayers.map((player, index) => (
                                 <li key={index} className="flex justify-between items-center">
                                     <span>{index + 1}. {player}</span>
@@ -112,22 +112,22 @@ const Players = () => {
 
                         <button
                             onClick={copyToClipboard}
-                            className="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                            className="mt-4 px-4 py-2  bg-green-500 text-white rounded-lg hover:bg-green-600"
                         >
                             📋 खिलाड़ियों की सूची कॉपी करें
                         </button>
 
-                        {copied && <p className="mt-2 text-green-500">✅ सूची क्लिपबोर्ड में कॉपी हो गई!</p>}
+                        {copied && <p className="mt-2  text-green-500">✅ सूची क्लिपबोर्ड में कॉपी हो गई!</p>}
                     </div>
                 )}
 
                
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[40vh] scroll p-2 overflow-y-scroll">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[40vh] items-start scroll p-2 overflow-y-scroll">
                     {filteredPlayers.map(({ name }, index) => (
                         <div
                             key={index}
-                            className={`p-4 border rounded-lg cursor-pointer transition ${
+                            className={`p-4 border rounded-lg  cursor-pointer transition ${
                                 selectedPlayers.includes(name)
                                     ? "bg-indigo-500 text-white"
                                     : "bg-white hover:bg-indigo-100"
