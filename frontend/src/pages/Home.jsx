@@ -73,7 +73,7 @@ const Home = () => {
         <>
             <Navbar />
             <main className="min-h-screen w-full py-24 flex flex-col gap-5 items-center justify-center bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 p-6">
-                <div className="max-w-4xl w-full">
+                <div className="max-w-4xl w-full py-12">
                     {user?.isVoted ? (
                         <div className="bg-white p-8 rounded-2xl shadow-2xl text-center">
                             <h2 className="text-4xl font-bold font-serif text-gray-800 mb-4">
