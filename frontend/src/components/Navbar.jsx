@@ -89,7 +89,7 @@ const Navbar = () => {
                     {/* Logo Section */}
                     <NavLink to="/" className="flex items-center gap-2">
                         <img src="./tcclogo.png" alt="TCC Logo" width={50} />
-                        <span className="text-xl font-bold text-indigo-600">TCC Kasba</span>
+                        <span className="text-xl md:block hidden font-bold text-indigo-600">TCC Kasba</span>
                     </NavLink>
 
                     {/* Navigation Section */}
